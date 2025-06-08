@@ -31,7 +31,22 @@
   <div id="messages"></div>
   <input type="text" id="message-input" placeholder="Type your message..." />
   <button id="send-btn">Send</button>
-
+            <!-- Dots -->
+          <div class="dot-container">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <span id="currentTime">Loading time...</span>
+				<!-- Footer -->
+         <footer class="w3-display-bottommiddle w3-padding-large w3-center">
+          <footer style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);">
+  <button onclick="signOut()" style="padding: 0.6em 1.2em; font-size: 1em; background-color: #f44336; color: white; border: none; border-radius: 5px; cursor: pointer;">
+    Sign Out
+  </button>
+</footer>
   <script>
     const API_KEY = "m8n6xhbvrdtd";
     const clientId = "admin"; // Always 'admin' for admin
@@ -74,6 +89,31 @@
     } else {
       startChat();
     }
+
+function formatDate(date) {
+      return date.toLocaleDateString(undefined, {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+      function updateTime() {
+        const now = new Date();
+        const formatted = now.toLocaleTimeString();
+        document.getElementById('currentTime').textContent = `Current Time: ${formatted}`;
+      }
+  updateTime(); // initial call
+  setInterval(updateTime, 1000); // update every second
+    function formatFullDate(date) {
+      return date.zISOString().split('T')[0]; // YYYY-MM-DD for easier storage if needed
+    }
+    function signOut() {
+    sessionStorage.clear(); // Delete all session data
+    window.location.href = "index.html"; // Redirect to home
+  }
+    
   </script>
+
+  
 </body>
 </html>
