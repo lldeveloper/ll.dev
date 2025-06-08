@@ -383,7 +383,8 @@ body, html {
     // Dummy signOut for footer link
     function signOut() {
       alert("Signing out...");
-      // Add your sign-out logic here
+          sessionStorage.clear(); // Delete all session data
+    		window.location.href = "index.html"; // Redirect to home
     }
   </script>
 </body>
