@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="company-name">* Company</div>
+    <a class="login-btn" href="index.html">Back to Home</a>
+  </header>
+
+  <main class="login-container">
+    <form class="login-form" onsubmit="validateLogin(event)">
+      <h2>Login</h2>
+      <input type="text" id="lastName" placeholder="Last Name" required />
+      <input type="date" id="dob" required />
+      <button type="submit">Login</button>
+    </form>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

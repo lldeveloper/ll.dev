@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Client Portal</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="company-name">* Company</div>
+    <a class="login-btn" href="index.html">Logout</a>
+  </header>
+
+  <main class="portal-container">
+    <h2>Upcoming 3 Days</h2>
+    <div id="days-container" class="days-container"></div>
+
+    <div id="upload-section" class="upload-section" style="display:none;">
+      <h3 id="selected-day-title"></h3>
+      <form id="photo-form">
+        <input type="file" id="photo-input" name="photos" accept="image/*" multiple required />
+        <button type="submit">Submit Photos</button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const daysContainer = document.getElementById('days-container');
+    const uploadSection = document.getElementById('upload-section');
+    const selectedDayTitle = document.getElementById('selected-day-title');
+    const photoForm = document.getElementById('photo-form');
+    const photoInput = document.getElementById('photo-input');
+
+    let selectedDay = null;
+
+    function formatDate(date) {
+      return date.toLocaleDateString(undefined, {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    function formatFullDate(date) {
+      return date.toISOString().split('T')[0]; // YYYY-MM-DD for easier storage if needed
+    }
+
+    // Create day blocks
+    for(let i = 0; i < 3; i++) {
+      const day = new Date();
+      day.setDate(day.getDate() + i);
+
+      const dayBlock = document.createElement('div');
+      dayBlock.className = 'day-block';
+      dayBlock.textContent = formatDate(day);
+
+      dayBlock.addEventListener('click', () => {
+        selectedDay = day;
+        selectedDayTitle.textContent = 'Upload photos for ' + formatDate(day);
+        uploadSection.style.display = 'block';
+        photoInput.value = ''; // reset input
+      });
+
+      daysContainer.appendChild(dayBlock);
+    }
+
+    // Handle form submit
+    photoForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const files = photoInput.files;
+      if (!files.length) {
+        alert('Please select at least one photo.');
+        return;
+      }
+
+      alert(`Submitted ${files.length} photo(s) for ${formatDate(selectedDay)}`);
+
+      // Optionally, clear form and hide upload section
+      photoForm.reset();
+      uploadSection.style.display = 'none';
+    });
+  </script>
+
+</body>
+</html>
