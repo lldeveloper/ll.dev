@@ -1,34 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>Lossess</title>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Client Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway" />
   <link rel="stylesheet" href="style.css" />
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your App Name</title>
   <!-- iOS Fullscreen Web App Meta Tags -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="YourAppName">
   <!-- Your CSS and other head stuff -->
-  <link rel="stylesheet" href="style.css" />
-<title>Lossess</title>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<style>
-body,h1 {font-family: "Raleway", sans-serif}
-body, html {height: 100%}
-.bgimg {
-  background-image: url('welcomescreen.jpg');
-  min-height: 100%;
-  background-position: center;
-  background-size: cover;
-}
-</style>
 </head>
 <body onload="redirectIfLoggedIn()">
   <main class="login-container">
@@ -62,14 +45,11 @@ body, html {height: 100%}
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(loginData),
     });
-
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-
     const apiResponse = await response.json();  // parse the whole Lambda response object
     const result = JSON.parse(apiResponse.body); // parse the JSON string inside 'body'
-
     if (result.success) {
       sessionStorage.setItem('lastName', lastName);
       sessionStorage.setItem('dob', dob);
@@ -77,7 +57,6 @@ body, html {height: 100%}
     } else {
       window.location.href = "invalidcredentials.html";
     }
-
   } catch (error) 
   
   {
@@ -87,7 +66,6 @@ body, html {height: 100%}
 }
   </script>
 <footer>   <p class="w3-large w3-center">
-  
     <a href="index.html">Back to Home</a>
   </p></footer>
 </body>
