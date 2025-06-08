@@ -1,22 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mobile Site</title>
-  <link rel="stylesheet" href="style.css">
+<title>Test</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+<style>
+body,h1 {font-family: "Raleway", sans-serif}
+body, html {height: 100%}
+.bgimg {
+  background-image: url('welcomescreen.jpg');
+  min-height: 100%;
+  background-position: center;
+  background-size: cover;
+}
+</style>
 </head>
 <body>
 
-  <header>
-    <div class="company-name">* Company</div>
-    <a class="login-btn" href="login.html">Login</a>
-  </header>
-
-  <main>
-    <button onclick="sayHi()">Tap Me</button>
-  </main>
-
   <script src="script.js"></script>
+
+
+<div class="bgimg w3-display-container w3-animate-opacity w3-text-white">
+  <div class="w3-display-topleft w3-padding-large w3-xlarge">
+    Lossless
+  </div>
+  <div class="w3-display-middle">
+  <h1 class="w3-jumbo w3-animate-top">COMING SOON</h1>
+  <hr class="w3-border-grey" style="margin:auto; width:40%;">
+  <p class="w3-large w3-center">5 days left</p>
+  <!--<button onclick="sayHi()">Tap Me</button>-->
+  <p class="w3-large w3-center">
+    <a href="login.html">Login</a>
+  </p>
+</div>
+  <div class="w3-display-bottomleft w3-padding-large">
+    Powered by <a href="https://github.com" target="_blank">Test</a>
+  </div>
+</div>
+
 </body>
 </html>
