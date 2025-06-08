@@ -30,15 +30,15 @@
 						<div class="content">
 							<div class="inner">
 								<h2 id="greeting">Welcome</h2>
-								<p>Log your food</p>
+								<p>welcome back!</p>
 							</div>
 						</div>
 						<nav>
 							<ul>
-								<li><a href="#breakfast">Breakfast</a></li>
-								<li><a href="#lunch">Lunch</a></li>
-								<li><a href="#dinner">Dinner</a></li>
-								<li><a href="#snacks">Snacks</a></li>
+								<li><a href="#photo">take a photo</a></li>
+								<li><a href="#lunch">Boring stuff</a></li>
+								<li><a href="#LB">Leaderboards</a></li>
+								<li><a href="#settings">settings</a></li>
 								<!--<li><a href="#elements">Elements</a></li>-->
 							</ul>
 						</nav>
@@ -46,8 +46,8 @@
 				<!-- Main -->
 					<div id="main">
 						<!-- Breakfast -->
-							<article id="breakfast">
-              <h2 class="major">Breakfast</h2>
+							<article id="photo">
+              <h2 class="major">Messanger</h2>
               <input type="file" accept="image/*" id="photoUpload" style="margin-bottom: 10px;" />
               <button onclick="handleUpload()">Upload Photo</button>
               <div id="photoPreview" style="margin-top: 15px;">
@@ -57,15 +57,14 @@
 						<!-- Lunch -->
 							<article id="lunch">
               <h2 class="major">Lunch</h2>
-              <input type="file" accept="image/*" id="photoUpload" style="margin-bottom: 10px;" />
-              <button onclick="handleUpload()">Upload Photo</button>
+            
               <div id="photoPreview" style="margin-top: 15px;">
                 <!-- Image will appear here -->
               </div>
             </article>
 						<!-- Dinner -->
-							<article id="dinner">
-              <h2 class="major">Dinner</h2>
+							<article id="LB">
+              <h2 class="major">Leadboards</h2>
               <input type="file" accept="image/*" id="photoUpload" style="margin-bottom: 10px;" />
               <button onclick="handleUpload()">Upload Photo</button>
               <div id="photoPreview" style="margin-top: 15px;">
@@ -73,8 +72,8 @@
               </div>
             </article>
 						<!-- Snacks -->
-								<article id="snacks">
-              <h2 class="major">Snacks</h2>
+								<article id="settings">
+              <h2 class="major">Settings</h2>
               <input type="file" accept="image/*" id="photoUpload" style="margin-bottom: 10px;" />
               <button onclick="handleUpload()">Upload Photo</button>
               <div id="photoPreview" style="margin-top: 15px;">
@@ -114,7 +113,18 @@
           <span id="currentTime">Loading time...</span>
 				<!-- Footer -->
          <footer class="w3-display-bottommiddle w3-padding-large w3-center">
-          <a href="#" onclick="signOut()" class="w3-text-white">Sign Out</a>
+          <h3 href="#" onclick="signOut()" class="w3-text-white">Sign Out</h3>
+            <div id="client-id-display" style="
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+
+  z-index: 1000;
+">
+  Loading client ID...
+</div>
         </footer>
 
 			</div>
@@ -126,7 +136,14 @@
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
-<style> 
+<style>
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  margin: 0;
+}
 body,h1 {font-family: "Raleway", sans-serif}
   .dot-container {
     display: flex;
@@ -141,13 +158,27 @@ body,h1 {font-family: "Raleway", sans-serif}
     border-radius: 50%;
     display: inline-block;
   }
+body, html {
+  background-color: black; /* or your app bg color */
+  height: 100%;
+  margin: 0;
+}
 </style>
 <!--JS-->
   <script>
+    window.addEventListener('DOMContentLoaded', () => {
+    const clientId = sessionStorage.getItem('clientId');
+    const display = document.getElementById('client-id-display');
+    if (clientId) {
+      display.textContent = "Client ID: " + clientId;
+    } else {
+      display.textContent = "Client ID not found.";
+    }
+  });
     const greetingDiv = document.getElementById('greeting');
     const lastName = sessionStorage.getItem('lastName');
     if (lastName) {
-      document.getElementById('greeting').textContent = `Welcome, ${lastName}`;
+      document.getElementById('greeting').textContent = `Hey ${lastName} 👋`;
     }
     const daysContainer = document.getElementById('days-container');
     const uploadSection = document.getElementById('upload-section');
@@ -170,7 +201,7 @@ body,h1 {font-family: "Raleway", sans-serif}
   updateTime(); // initial call
   setInterval(updateTime, 1000); // update every second
     function formatFullDate(date) {
-      return date.toISOString().split('T')[0]; // YYYY-MM-DD for easier storage if needed
+      return date.zISOString().split('T')[0]; // YYYY-MM-DD for easier storage if needed
     }
     // Photo Upload Button
         function handleUpload() {
@@ -231,6 +262,7 @@ body,h1 {font-family: "Raleway", sans-serif}
     sessionStorage.clear(); // Delete all session data
     window.location.href = "index.html"; // Redirect to home
   }
+  
   </script>
 </body>
 </html>

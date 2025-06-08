@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Chat</title>
+  <script src="https://unpkg.com/stream-chat@10.18.0/dist/bundle/stream-chat.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #messages {
+      border: 1px solid #ccc;
+      height: 300px;
+      overflow-y: scroll;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+    #message-input {
+      width: 80%;
+      padding: 8px;
+    }
+    #send-btn {
+      padding: 8px 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Admin Chat</h2>
+  <div id="messages"></div>
+  <input type="text" id="message-input" placeholder="Type your message..." />
+  <button id="send-btn">Send</button>
+
+  <script>
+    const API_KEY = "m8n6xhbvrdtd";
+    const clientId = "admin"; // Always 'admin' for admin
+    const streamToken = sessionStorage.getItem("streamToken"); // Set from login response
+
+    const chatClient = StreamChat.StreamChat.getInstance(API_KEY);
+
+    async function startChat() {
+      await chatClient.connectUser(
+        { id: clientId, name: "Admin" },
+        streamToken
+      );
+
+      const channel = chatClient.channel("messaging", "admin-client", {
+        members: ["admin"], // You can dynamically add client ID here if needed
+      });
+
+      await channel.watch();
+
+      const messagesDiv = document.getElementById("messages");
+      channel.on("message.new", event => {
+        const msg = event.message;
+        const div = document.createElement("div");
+        div.textContent = `${msg.user.id}: ${msg.text}`;
+        messagesDiv.appendChild(div);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      });
+
+      document.getElementById("send-btn").onclick = async () => {
+        const input = document.getElementById("message-input");
+        if (input.value.trim()) {
+          await channel.sendMessage({ text: input.value });
+          input.value = "";
+        }
+      };
+    }
+
+    if (!streamToken) {
+      alert("Missing stream token. Please log in first.");
+    } else {
+      startChat();
+    }
+  </script>
+</body>
+</html>
