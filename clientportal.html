@@ -406,7 +406,7 @@ async function handleUpload() {
   const uploadResponse = await fetch(presignedUrl, {
     method: "PUT",
     headers: {
-      "Content-Type": contentType
+      "Content-Type": file.type  // might be image/heic
     },
     body: file
   });
