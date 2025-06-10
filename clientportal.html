@@ -54,8 +54,13 @@
                   </svg>
                 </label>
                 <input type="file" accept="image/*" id="photoUpload" style="display: none;" onchange="handleUpload()" />
+                
                 <input type="text" id="chatMessage" placeholder="Type a message..." />
-                <button onclick="sendMessage()">Send</button>
+                <button id="sendButton" onclick="sendMessage()" aria-label="Send message">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" fill="white"/>
+                  </svg>
+                </button>
               </div>
               </article>
             <article id="lunch"> <!-- Second Panel -->
@@ -65,16 +70,10 @@
               </article>
             <article id="LB"> <!-- Third Panel -->
               <h2 class="major">Leadboards</h2>
-              <input type="file" accept="image/*" id="photoUpload" style="margin-bottom: 10px;" />
-              <button onclick="handleUpload()">Upload Photo</button>
-              <div id="photoPreview" style="margin-top: 15px;">
               </div>
               </article>
             <article id="settings"> <!-- Fourth Panel -->
               <h2 class="major">Settings</h2>
-              <input type="file" accept="image/*" id="photoUpload" style="margin-bottom: 10px;" />
-              <button onclick="handleUpload()">Upload Photo</button>
-              <div id="photoPreview" style="margin-top: 15px;">
               </div>
               </article>
             <article id="elements"> <!-- Elements -->
@@ -116,16 +115,16 @@
       <!-- BG -->
         <div id="bg"></div>
     </body>
-  <style>
-      body {
-        padding-top: env(safe-area-inset-top);
-        padding-left: env(safe-area-inset-left);
-        padding-right: env(safe-area-inset-right);
-        padding-bottom: env(safe-area-inset-bottom);
-        margin: 0;
-      }
-      body,h1 {font-family: "Raleway", sans-serif}
-        .dot {
+<style>
+body {
+  padding-top: env(safe-area-inset-top);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
+  margin: 0;
+  }
+body,h1 {font-family: "Raleway", sans-serif}
+.dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
@@ -133,14 +132,12 @@
   opacity: 0;
   animation: fadeIn 0.5s forwards;
   margin: 0 6px; /* Add left and right spacing */
-}
-
+  }
 @keyframes fadeIn {
   to {
     opacity: 1;
   }
 }
-
 @keyframes greenFadeInOut {
   0%, 100% {
     opacity: 20;
@@ -151,7 +148,6 @@
     box-shadow: 0 0 8px 3px #00ff00cc, 0 0 15px 5px #00ff00aa;
   }
 }
-
 .dot.green {
   background-color: #00cc00 !important;
   border-radius: 50%;
@@ -160,92 +156,145 @@
   animation: greenFadeInOut 3s ease-in-out infinite;
   will-change: box-shadow, opacity;
 }
-
-
 .dot.red {
   background-color: rgb(131, 0, 0);
 }
+#sendButton {
+  background-color: #007aff; /* iOS blue */
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 122, 255, 0.3);
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+#sendButton:hover {
+  background-color: #006de1;
+}
+#sendButton:active {
+  transform: scale(0.97);
+  background-color: #005bb5;
+}
+body, html {
+  background-color: black; /* or your app bg color */
+  height: 100%;
+  margin: 0;
+}
+.chat-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+.chat-window {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1); /* slightly more transparent */
+  backdrop-filter: blur(10px); /* frosted glass effect */
+  -webkit-backdrop-filter: blur(10px);
+  padding: 15px;
+  height: 300px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  color: black;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 
-      body, html {
-        background-color: black; /* or your app bg color */
-        height: 100%;
-        margin: 0;
-      }
-      .chat-input-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-top: 10px;
-      }
-      .chat-window {
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 15px;
-        background: rgba(255, 255, 255, 0.1); /* slightly more transparent */
-        backdrop-filter: blur(10px); /* frosted glass effect */
-        -webkit-backdrop-filter: blur(10px);
-        padding: 15px;
-        height: 300px;
-        overflow-y: auto;
-        margin-bottom: 10px;
-        color: black;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      }
-      .upload-icon {
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 6px;
-        border-radius: 50%;
-        transition: background 0.3s;
-      }
-      .upload-icon:hover {
-        background: rgba(33, 150, 243, 0.1);
-      }
-      .chat-input-wrapper input[type="text"] {
-        flex: 1;
-        padding: 8px;
-        border-radius: 10px;
-        border: 1px solid #ccc;
-        font-size: 1em;
-      }
-      .chat-input-wrapper button {
-        padding: 8px 16px;
-        border: none;
-        border-radius: 10px;
-        background: #2196F3;
-        color: white;
-        cursor: pointer;
-      }
-      #uploadSuccessMessage {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        transform: translateY(-100%);
-        background-color: rgba(100, 100, 100, 0.5); /* opaque grey */
-        color: white;
-        padding: 14px 0;
-        font-weight: bold;
-        text-align: center;
-        z-index: 1000;
-        transition: transform 0.5s ease;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-        pointer-events: none;
-      }
-      /* When active, slide down */
-      #uploadSuccessMessage.show {
-        transform: translateY(0);
-      }
-  </style>
-  <!-- Scripts -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/browser.min.js"></script>
-    <script src="assets/js/breakpoints.min.js"></script>
-    <script src="assets/js/util.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script>
-      function showUploadSuccessMessage() {
+  /* Scrollbar for Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+/* Scrollbar for WebKit browsers (Chrome, Edge, Safari) */
+.chat-window::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-window::-webkit-scrollbar-track {
+  background: transparent;
+}
+.chat-window::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+}
+.chat-window::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+.upload-icon {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+.upload-icon:hover {
+  background: rgba(33, 150, 243, 0.1);
+}
+.chat-input-wrapper input[type="text"] {
+  flex: 1;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 1em;
+}
+.chat-input-wrapper button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 10px;
+  background: #2196F3;
+  color: white;
+  cursor: pointer;
+}
+#uploadSuccessMessage {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  transform: translateY(-100%);
+  background-color: rgba(100, 100, 100, 0.5); /* opaque grey */
+  color: white;
+  padding: 14px 0;
+  font-weight: bold;
+  text-align: center;
+  z-index: 1000;
+  transition: transform 0.5s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  pointer-events: none;
+}
+/* When active, slide down */
+#uploadSuccessMessage.show {
+  transform: translateY(0);
+}
+@keyframes blinkWave {
+  0%, 80%, 100% {
+    opacity: 0.3;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+.typing-dots::after {
+  content: " ...";
+  animation: blink 1.4s infinite;
+}
+</style>
+
+<!-- Scripts -->
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+
+<script> // *** Scripts Begin Here
+// *** Typing Dots and Photo Response    
+function showUploadSuccessMessage() {
         let msg = document.getElementById("uploadSuccessMessage");
         if (!msg) {
           msg = document.createElement("div");
@@ -270,7 +319,8 @@
     }
   }, 3500);
 }
-  function renderStatusDots(statusString) {
+// *** User Status Indicator
+function renderStatusDots(statusString) {
   const container = document.querySelector('.dot-container');
   container.innerHTML = ''; // Clear existing dots
 
@@ -299,44 +349,38 @@
   }
 }
 const status = sessionStorage.getItem('status');
+// Calls Status Indicator
 if (status) {
   renderStatusDots(status);
 }
-  // Show preview
-    const reader = new FileReader();
-    reader.onload = function (e) {
-      previewDiv.innerHTML = `
-        <p><strong>Time of Day:</strong> Breakfast</p>
-        <img src="${e.target.result}" alt="Uploaded photo" style="max-width: 100%; height: auto; border: 1px solid #ccc; padding: 5px;" />
-      `;
-    };
-    // Get stored username from sessionStorage or set a fallback
+// Get stored username from sessionStorage or set a fallback
     const username = sessionStorage.getItem('username') || 'there';
-    // Capitalize first letter (optional)
+// Capitalize first letter (optional)
     const displayName = username.charAt(0).toUpperCase() + username.slice(1);
-    // Update greeting text
+// Update greeting text
     const greetingEl = document.getElementById('greeting');
       if (greetingEl) {
         greetingEl.textContent = `Hey ${displayName} 👋`;
       }
     document.addEventListener('DOMContentLoaded', () => {
-      const clientId = sessionStorage.getItem('clientId'); // Show client ID from sessionStorage
+// Show client ID from sessionStorage
+      const clientId = sessionStorage.getItem('clientId');
       const display = document.getElementById('client-id-display');
       if (clientId) {
         display.textContent = "Client ID: " + clientId;
       } else {
         display.textContent = "Client ID not found.";
       }
-
-      function updateTime() { // Update clock every second
-        const now = new Date();
-        const formatted = now.toLocaleTimeString();
-        document.getElementById('currentTime').textContent = `Current Time: ${formatted}`;
-        }
-        updateTime();
-        setInterval(updateTime, 1000);
-        });
-        
+// *** Updates Clock
+function updateTime() { // Update clock every second
+  const now = new Date();
+  const formatted = now.toLocaleTimeString();
+  document.getElementById('currentTime').textContent = `Current Time: ${formatted}`;
+  }
+updateTime();
+setInterval(updateTime, 1000);
+});
+// **** Get Presigned URL From Back End
 async function getPresignedUrl(clientHash, originalFilename) {
   function generateS3Key(filename) {
     const now = new Date();
@@ -370,7 +414,7 @@ async function getPresignedUrl(clientHash, originalFilename) {
   const parsed = JSON.parse(text);
   return parsed;  // return entire parsed response (not just uploadUrl)
 }
-
+// *** Uplolad Image to Server
 async function handleUpload() {
   const fileInput = document.getElementById("photoUpload");
   const chatWindow = document.getElementById("chatWindow");
@@ -380,40 +424,22 @@ async function handleUpload() {
   }
   const file = fileInput.files[0];
   const clientHash = sessionStorage.getItem("clientId");
-
   // Show the image immediately in chat window (local preview)
-  const imgDiv = document.createElement("div");
-  imgDiv.style.marginBottom = "5px";
-  imgDiv.style.padding = "6px 10px";
-  imgDiv.style.borderRadius = "8px";
-  imgDiv.style.background = "#e0f7fa";
-  imgDiv.style.alignSelf = "flex-start";
-  const img = document.createElement("img");
-  img.src = URL.createObjectURL(file);
-  img.style.maxWidth = "150px";
-  img.style.borderRadius = "10px";
-  img.style.display = "block";
-  imgDiv.appendChild(img);
-  chatWindow.appendChild(imgDiv);
-  chatWindow.scrollTop = chatWindow.scrollHeight;
-
+  addPhotoWithResponse(file)
   // Get presigned URL response (includes status info)
   const presignedResponse = await getPresignedUrl(clientHash, file.name);
   const presignedUrl = presignedResponse.uploadUrl;
-
   const contentType = file.type || "image/jpeg"; // fallback
   const uploadResponse = await fetch(presignedUrl, {
     method: "PUT",
     headers: { "Content-Type": contentType },
     body: file
   });
-
   if (!uploadResponse.ok) {
     alert(`Upload failed with status ${uploadResponse.status}`);
     chatWindow.removeChild(imgDiv);
     return;
   }
-
   // After successful upload, extract status from user_status_tool_data and save + alert
   try {
     const userStatusData = presignedResponse.user_status_tool_data;
@@ -421,86 +447,142 @@ async function handleUpload() {
       const innerBody = JSON.parse(userStatusData.body);
       if (innerBody.status) {
         let statusArray = innerBody.status;
-
         // If last element is "0", change it to "1"
         if (statusArray[statusArray.length - 1] === "0") {
           statusArray[statusArray.length - 1] = "1";
         }
-
         sessionStorage.setItem('status', JSON.stringify(statusArray));
         alert(`Status: ${statusArray.join(', ')}`);
-
         renderStatusDots(statusArray.join(''));
       }
     }
   } catch (err) {
     console.error("Failed to parse or alert status:", err);
   }
-
   showUploadSuccessMessage();
   URL.revokeObjectURL(img.src);
 }
+// *** Displays Photo With Auto Response
+function addPhotoWithResponse(file) {
+  // IMAGE BUBBLE 
+  const imgDiv = document.createElement("div");
+  imgDiv.style.marginBottom = "5px";
+  imgDiv.style.borderRadius = "10px";
+  imgDiv.style.background = "#808080";
+  imgDiv.style.alignSelf = "flex-end";
+  imgDiv.style.display = "inline-block";
+  imgDiv.style.overflow = "hidden";
+  imgDiv.style.maxWidth = "150px";
+  imgDiv.style.width = "auto";
+  const img = document.createElement("img");
+  img.src = URL.createObjectURL(file);
+  img.style.width = "100%";
+  img.style.height = "auto";
+  img.style.borderRadius = "10px";
+  img.style.display = "block";
+  img.onload = () => {
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  };
+  imgDiv.appendChild(img);
+  chatWindow.appendChild(imgDiv);
 
+  // Create typing indicator div (left side, system response)
+  const typingDiv = document.createElement("div");
+  typingDiv.style.marginBottom = "5px";
+  typingDiv.style.padding = "6px 10px";
+  typingDiv.style.borderRadius = "8px";
+  typingDiv.style.background = "#0080FF";
+  typingDiv.style.color = "white";
+  typingDiv.style.alignSelf = "flex-start";
+  typingDiv.style.maxWidth = "70%";
+  typingDiv.style.fontWeight = "bold";
+  typingDiv.textContent = "";
 
+  // Create dots span
+  const dotsSpan = document.createElement("span");
+  dotsSpan.style.marginLeft = "6px";
 
-    // Messages
-    async function sendMessage() {
-      const messageInput = document.getElementById("chatMessage");
-      const chatWindow = document.getElementById("chatWindow");
-      const message = messageInput.value.trim();
-      if (!message) return;
-      // Display user message
-      const userDiv = document.createElement("div");
-      userDiv.textContent = message;
-      userDiv.style.marginBottom = "5px";
-      userDiv.style.padding = "6px 10px";
-      userDiv.style.borderRadius = "8px";
-      userDiv.style.background = "#e0f7fa";
-      userDiv.style.alignSelf = "flex-start";
-      chatWindow.appendChild(userDiv);
-      chatWindow.scrollTop = chatWindow.scrollHeight;
-      messageInput.value = "";
-      // Placeholder for streaming response
-      const responseDiv = document.createElement("div");
-      responseDiv.textContent = "";
-      responseDiv.style.marginBottom = "5px";
-      responseDiv.style.padding = "6px 10px";
-      responseDiv.style.borderRadius = "8px";
-      responseDiv.style.background = "#fff9c4";
-      responseDiv.style.alignSelf = "flex-end";
-      chatWindow.appendChild(responseDiv);
-      // Call backend API streaming response
-      try {
-        const res = await fetch("/api/stream-response", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message }),
-        });
+  for (let i = 0; i < 3; i++) {
+    const dot = document.createElement("span");
+    dot.textContent = "•";
+    dot.style.marginRight = "4px";
+    dot.style.fontSize = "24px";
+    dot.style.opacity = "0.3";
+    dot.style.animation = `blinkWave 1.4s infinite`;
+    dot.style.animationDelay = `${i * 0.3}s`;
+    dotsSpan.appendChild(dot);
+  }
 
-        if (!res.body) {
-          responseDiv.textContent = "No response body from server.";
-          return;
-        }
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let done = false;
-        while (!done) {
-          const { value, done: readerDone } = await reader.read();
-          if (value) {
-            const chunk = decoder.decode(value, { stream: true });
-            responseDiv.textContent += chunk;
-            chatWindow.scrollTop = chatWindow.scrollHeight;
-          }
-          done = readerDone;
-        }
-      } catch (error) {
-        responseDiv.textContent = "Error fetching response.";
-        console.error(error);
+  typingDiv.appendChild(dotsSpan);
+  chatWindow.appendChild(typingDiv);
+
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+
+  // After 2 seconds, replace typing with message
+  setTimeout(() => {
+    typingDiv.textContent = "Thank you for submitting your photo! I'll let Duke know!";
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+  }, 2000);
+}
+// *** Messages
+async function sendMessage() {
+    const messageInput = document.getElementById("chatMessage");
+    const chatWindow = document.getElementById("chatWindow");
+    const message = messageInput.value.trim();
+    if (!message) return;
+    // Display user message
+    const userDiv = document.createElement("div");
+    userDiv.textContent = message;
+    userDiv.style.marginBottom = "5px";
+    userDiv.style.padding = "6px 10px";
+    userDiv.style.borderRadius = "8px";
+    userDiv.style.background = "#e0f7fa";
+    userDiv.style.alignSelf = "flex-start";
+    chatWindow.appendChild(userDiv);
+    chatWindow.scrollTop = chatWindow.scrollHeight;
+    messageInput.value = "";
+    // Placeholder for streaming response
+    const responseDiv = document.createElement("div");
+    responseDiv.textContent = "";
+    responseDiv.style.marginBottom = "5px";
+    responseDiv.style.padding = "6px 10px";
+    responseDiv.style.borderRadius = "8px";
+    responseDiv.style.background = "#fff9c4";
+    responseDiv.style.alignSelf = "flex-end";
+    chatWindow.appendChild(responseDiv);
+    // Call backend API streaming response
+    try {
+      const res = await fetch("/api/stream-response", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message }),
+      });
+
+      if (!res.body) {
+        responseDiv.textContent = "No response body from server.";
+        return;
       }
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        if (value) {
+          const chunk = decoder.decode(value, { stream: true });
+          responseDiv.textContent += chunk;
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+        done = readerDone;
+      }
+    } catch (error) {
+      responseDiv.textContent = "Error fetching response.";
+      console.error(error);
     }
-    function signOut() {
-        sessionStorage.clear(); // Delete all session data
-      window.location.href = "index.html"; // Redirect to home
-    }
+  }
+// *** Signout 
+function signOut() {
+      sessionStorage.clear(); // Delete all session data
+    window.location.href = "index.html"; // Redirect to home
+  }
     </script>
   </html>
