@@ -3,24 +3,19 @@
   <head>
     <!-- Character encoding -->
     <meta charset="UTF-8" />
-
     <!-- Viewport settings for responsive design -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <!-- Page Title -->
-    <title>Lossless</title> <!-- Choose a single, consistent title -->
-
+    <title>LiftnLose</title>
     <!-- Main CSS stylesheet -->
     <link rel="stylesheet" href="style.css" />
-
     <!-- iOS Web App Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Lossless" />
-
     <!-- Additional metadata or head assets can go below -->
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <link rel="stylesheet" href="assets/css/main.css" />
     <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
   </head>
@@ -102,9 +97,9 @@
               </section>
             </article>
               </div>
-            <div id="statusDots" class="dot-container"> <!-- Dots -->
+            <div id="statusDots" class="dot-container"> <!-- Dots --> 
               </div>
-            <span id="currentTime">Loading time...</span> <!-- Current Time -->
+            <!--<span id="currentTime">Loading time...</span> Current Time -->
           <footer class="w3-display-bottommiddle w3-padding-large w3-center"> <!-- Footer -->
             <h3 href="#" onclick="signOut()" class="w3-text-white">Sign Out</h3>
             <div id="client-id-display" style="
@@ -148,7 +143,7 @@
 
 @keyframes greenFadeInOut {
   0%, 100% {
-    opacity: 0;
+    opacity: 20;
     box-shadow: none;
   }
   50% {
@@ -162,7 +157,7 @@
   border-radius: 50%;
   width: 10px;
   height: 10px;
-  animation: greenFadeInOut 4s ease-in-out infinite;
+  animation: greenFadeInOut 3s ease-in-out infinite;
   will-change: box-shadow, opacity;
 }
 
@@ -322,7 +317,7 @@ if (status) {
     // Update greeting text
     const greetingEl = document.getElementById('greeting');
       if (greetingEl) {
-        greetingEl.textContent = `Hi ${displayName} 👋`;
+        greetingEl.textContent = `Hey ${displayName} 👋`;
       }
     document.addEventListener('DOMContentLoaded', () => {
       const clientId = sessionStorage.getItem('clientId'); // Show client ID from sessionStorage
@@ -341,6 +336,7 @@ if (status) {
         updateTime();
         setInterval(updateTime, 1000);
         });
+        
 async function getPresignedUrl(clientHash, originalFilename) {
   function generateS3Key(filename) {
     const now = new Date();
@@ -358,23 +354,23 @@ async function getPresignedUrl(clientHash, originalFilename) {
     }
     return `${hour}_${minutes}_${month}_${day}${ext}`;
   }
-  // Compose full key: clientHash folder + generated file name
+
   const s3Key = `${clientHash}/${generateS3Key(originalFilename)}`;
   const response = await fetch("https://hq17bpo4h9.execute-api.us-east-2.amazonaws.com/dev/upload", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       clientHash: clientHash,
       action: "photoupload",
-      key: s3Key  // pass the generated S3 key here
+      key: s3Key
     })
   });
+  
   const text = await response.text();
   const parsed = JSON.parse(text);
-  return parsed.uploadUrl;
+  return parsed;  // return entire parsed response (not just uploadUrl)
 }
+
 async function handleUpload() {
   const fileInput = document.getElementById("photoUpload");
   const chatWindow = document.getElementById("chatWindow");
@@ -384,7 +380,7 @@ async function handleUpload() {
   }
   const file = fileInput.files[0];
   const clientHash = sessionStorage.getItem("clientId");
-  // alert(clientHash); // optional, for debugging
+
   // Show the image immediately in chat window (local preview)
   const imgDiv = document.createElement("div");
   imgDiv.style.marginBottom = "5px";
@@ -400,27 +396,42 @@ async function handleUpload() {
   imgDiv.appendChild(img);
   chatWindow.appendChild(imgDiv);
   chatWindow.scrollTop = chatWindow.scrollHeight;
-  // Then upload the image to your backend as you do now
-  const presignedUrl = await getPresignedUrl(clientHash, file.name);
-  const contentType = file.type || "image/jpeg"; // Fallback to a safe default
+
+  // Get presigned URL response (includes status info)
+  const presignedResponse = await getPresignedUrl(clientHash, file.name);
+  const presignedUrl = presignedResponse.uploadUrl;
+
+  const contentType = file.type || "image/jpeg"; // fallback
   const uploadResponse = await fetch(presignedUrl, {
     method: "PUT",
-    headers: {
-      "Content-Type": file.type  // might be image/heic
-    },
+    headers: { "Content-Type": contentType },
     body: file
   });
 
   if (!uploadResponse.ok) {
     alert(`Upload failed with status ${uploadResponse.status}`);
-    // Optionally remove the preview if upload fails
     chatWindow.removeChild(imgDiv);
     return;
   }
+
+  // After successful upload, extract status from user_status_tool_data and save + alert
+  try {
+    const userStatusData = presignedResponse.user_status_tool_data;
+    if (userStatusData && userStatusData.body) {
+      const innerBody = JSON.parse(userStatusData.body);
+      if (innerBody.status) {
+        sessionStorage.setItem('status', JSON.stringify(innerBody.status));
+        alert(`Status: ${innerBody.status.join(', ')}`);
+      }
+    }
+  } catch (err) {
+    console.error("Failed to parse or alert status:", err);
+  }
+
   showUploadSuccessMessage();
-  // Optionally revoke the object URL after upload to free memory
   URL.revokeObjectURL(img.src);
 }
+
 
 
     // Messages
