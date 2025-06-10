@@ -19,7 +19,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="Lossless" />
 
-
     <!-- Additional metadata or head assets can go below -->
     <meta charset="utf-8" />
     <link rel="stylesheet" href="assets/css/main.css" />
@@ -103,19 +102,9 @@
               </section>
             </article>
               </div>
-            <div class="dot-container"> <!-- Dots -->
-              <span class="dot"></span>
-              <span class="dot"></span>
-              <span class="dot"></span>
-              <span class="dot"></span>
-              <span class="dot"></span>
+            <div id="statusDots" class="dot-container"> <!-- Dots -->
               </div>
-          
-              <div class="progress-container"> <!-- Dots -->
-              <input type="range" min="0" max="100" value="50" />
-              <p>your progress</p>
-              </div>
-            <!-- <span id="currentTime">Loading time...</span> <!-- Current Time -->
+            <span id="currentTime">Loading time...</span> <!-- Current Time -->
           <footer class="w3-display-bottommiddle w3-padding-large w3-center"> <!-- Footer -->
             <h3 href="#" onclick="signOut()" class="w3-text-white">Sign Out</h3>
             <div id="client-id-display" style="
@@ -141,57 +130,46 @@
         margin: 0;
       }
       body,h1 {font-family: "Raleway", sans-serif}
-        .dot-container {
-          display: flex;
-          justify-content: center;
-          margin: 40px 0;
-          gap: 8px;
-        }
         .dot {
-          width: 10px;
-          height: 10px;
-          background-color: #888;
-          border-radius: 50%;
-          display: inline-block;
-        }
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  opacity: 0;
+  animation: fadeIn 0.5s forwards;
+  margin: 0 6px; /* Add left and right spacing */
+}
 
-  .progress-container input[type="range"] {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 8px;
-    border-radius: 4px;
-    outline: none;
-    cursor: pointer;
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
 
-    /* This creates the two colors on the track: green up to value, grey after */
-    background: linear-gradient(
-      to right,
-      #4caf50 0%,
-      #4caf50 var(--range-progress),
-      #888 var(--range-progress),
-      #888 100%
-    );
+@keyframes greenFadeInOut {
+  0%, 100% {
+    opacity: 0;
+    box-shadow: none;
   }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 8px 3px #00ff00cc, 0 0 15px 5px #00ff00aa;
+  }
+}
 
-  /* Thumb styling */
-  .progress-container input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 10px;
-    height: 10px;
-    background: #2e7d32; /* darker green */
-    border-radius: 50%;
-    border: 1px solid #1b5e20;
-    cursor: pointer;
-  }
-  .progress-container input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: #2e7d32;
-    border-radius: 50%;
-    border: 1px solid #1b5e20;
-    cursor: pointer;
-  }
+.dot.green {
+  background-color: #00cc00 !important;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  animation: greenFadeInOut 4s ease-in-out infinite;
+  will-change: box-shadow, opacity;
+}
+
+
+.dot.red {
+  background-color: rgb(131, 0, 0);
+}
 
       body, html {
         background-color: black; /* or your app bg color */
@@ -260,12 +238,10 @@
         box-shadow: 0 2px 8px rgba(0,0,0,0.2);
         pointer-events: none;
       }
-
       /* When active, slide down */
       #uploadSuccessMessage.show {
         transform: translateY(0);
       }
-
   </style>
   <!-- Scripts -->
     <script src="assets/js/jquery.min.js"></script>
@@ -282,10 +258,8 @@
     msg.textContent = "Upload successful!";
     document.body.appendChild(msg);
   }
-
   // Trigger slide down by adding 'show' class
   msg.classList.add("show");
-
   // Clear any previous timers
   if (msg._hideTimeout) clearTimeout(msg._hideTimeout);
   if (msg._removeTimeout) clearTimeout(msg._removeTimeout);
@@ -294,7 +268,6 @@
   msg._hideTimeout = setTimeout(() => {
     msg.classList.remove("show");
   }, 3000);
-
   // After slide up transition (0.5s), remove the message from DOM
   msg._removeTimeout = setTimeout(() => {
     if (msg.parentNode) {
@@ -302,7 +275,38 @@
     }
   }, 3500);
 }
+  function renderStatusDots(statusString) {
+  const container = document.querySelector('.dot-container');
+  container.innerHTML = ''; // Clear existing dots
 
+  // Remove commas from the status string
+  const cleanedStatus = statusString.replace(/,/g, '');
+
+  let delay = 0;
+  const delayStep = 0.3; // seconds delay between dots
+
+  for (const char of cleanedStatus) {
+    const dot = document.createElement('span');
+    dot.classList.add('dot');
+
+    if (char === '1') {
+      dot.classList.add('green')
+    } else if (char === '0') {
+      dot.classList.add('red')
+    } else {
+      dot.style.backgroundColor = '#888';   // fallback grey
+    }
+
+    dot.style.animationDelay = `${delay}s`;
+    delay += delayStep;
+
+    container.appendChild(dot);
+  }
+}
+const status = sessionStorage.getItem('status');
+if (status) {
+  renderStatusDots(status);
+}
   // Show preview
     const reader = new FileReader();
     reader.onload = function (e) {
@@ -311,18 +315,6 @@
         <img src="${e.target.result}" alt="Uploaded photo" style="max-width: 100%; height: auto; border: 1px solid #ccc; padding: 5px;" />
       `;
     };
-    const slider = document.querySelector('.progress-container input[type="range"]');
-
-    function updateSliderBackground() {
-      const value = slider.value;
-      slider.style.setProperty('--range-progress', `${value}%`);
-    }
-
-    // Initialize on page load
-    updateSliderBackground();
-
-    // Update on input change
-    slider.addEventListener('input', updateSliderBackground);
     // Get stored username from sessionStorage or set a fallback
     const username = sessionStorage.getItem('username') || 'there';
     // Capitalize first letter (optional)
@@ -330,7 +322,7 @@
     // Update greeting text
     const greetingEl = document.getElementById('greeting');
       if (greetingEl) {
-        greetingEl.textContent = `Hey ${displayName} 👋`;
+        greetingEl.textContent = `Hi ${displayName} 👋`;
       }
     document.addEventListener('DOMContentLoaded', () => {
       const clientId = sessionStorage.getItem('clientId'); // Show client ID from sessionStorage
@@ -349,8 +341,6 @@
         updateTime();
         setInterval(updateTime, 1000);
         });
-
-
 async function getPresignedUrl(clientHash, originalFilename) {
   function generateS3Key(filename) {
     const now = new Date();
@@ -362,17 +352,14 @@ async function getPresignedUrl(clientHash, originalFilename) {
     ];
     const month = monthNames[now.getMonth()];
     const day = now.getDate();
-
     let ext = '';
     if (filename && filename.lastIndexOf('.') !== -1) {
       ext = filename.substring(filename.lastIndexOf('.'));
     }
     return `${hour}_${minutes}_${month}_${day}${ext}`;
   }
-
   // Compose full key: clientHash folder + generated file name
   const s3Key = `${clientHash}/${generateS3Key(originalFilename)}`;
-
   const response = await fetch("https://hq17bpo4h9.execute-api.us-east-2.amazonaws.com/dev/upload", {
     method: "POST",
     headers: {
@@ -384,13 +371,10 @@ async function getPresignedUrl(clientHash, originalFilename) {
       key: s3Key  // pass the generated S3 key here
     })
   });
-
   const text = await response.text();
   const parsed = JSON.parse(text);
-
   return parsed.uploadUrl;
 }
-
 async function handleUpload() {
   const fileInput = document.getElementById("photoUpload");
   const chatWindow = document.getElementById("chatWindow");
@@ -398,11 +382,9 @@ async function handleUpload() {
     alert("Please choose a photo first.");
     return;
   }
-
   const file = fileInput.files[0];
   const clientHash = sessionStorage.getItem("clientId");
   // alert(clientHash); // optional, for debugging
-
   // Show the image immediately in chat window (local preview)
   const imgDiv = document.createElement("div");
   imgDiv.style.marginBottom = "5px";
@@ -410,20 +392,16 @@ async function handleUpload() {
   imgDiv.style.borderRadius = "8px";
   imgDiv.style.background = "#e0f7fa";
   imgDiv.style.alignSelf = "flex-start";
-
   const img = document.createElement("img");
   img.src = URL.createObjectURL(file);
   img.style.maxWidth = "150px";
   img.style.borderRadius = "10px";
   img.style.display = "block";
-
   imgDiv.appendChild(img);
   chatWindow.appendChild(imgDiv);
   chatWindow.scrollTop = chatWindow.scrollHeight;
-
   // Then upload the image to your backend as you do now
   const presignedUrl = await getPresignedUrl(clientHash, file.name);
-
   const uploadResponse = await fetch(presignedUrl, {
     method: "PUT",
     headers: {

@@ -43,11 +43,18 @@
         });
         if (!response.ok) throw new Error('Network response was not ok');
         const apiResponse = await response.json();
-        const result = JSON.parse(apiResponse.body);
+let result;
+
+if (apiResponse.body) {
+  result = JSON.parse(apiResponse.body);
+} else {
+  result = apiResponse;
+}
         if (result.success) {
           sessionStorage.setItem('clientId', result.clientId);
-          sessionStorage.setItem('streamToken', result.streamToken);
+          sessionStorage.setItem('status', result.status);
           sessionStorage.setItem('username', username);
+          alert(result.status)
           if (result.clientId === "admin") {
             window.location.href = "adminportal.html";
           } else {
@@ -64,7 +71,7 @@
   </script>
   <footer>
     <p class="w3-large w3-center">
-      <a href="index.html">Back to Home</a>
+      <a href="index.html" style="color: white;">Home</a>
     </p>
   </footer>
 </body>
