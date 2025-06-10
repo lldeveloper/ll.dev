@@ -251,13 +251,13 @@
     <script src="assets/js/main.js"></script>
     <script>
       function showUploadSuccessMessage() {
-  let msg = document.getElementById("uploadSuccessMessage");
-  if (!msg) {
-    msg = document.createElement("div");
-    msg.id = "uploadSuccessMessage";
-    msg.textContent = "Upload successful!";
-    document.body.appendChild(msg);
-  }
+        let msg = document.getElementById("uploadSuccessMessage");
+        if (!msg) {
+          msg = document.createElement("div");
+          msg.id = "uploadSuccessMessage";
+          msg.textContent = "Upload successful!";
+          document.body.appendChild(msg);
+      }
   // Trigger slide down by adding 'show' class
   msg.classList.add("show");
   // Clear any previous timers
@@ -402,10 +402,11 @@ async function handleUpload() {
   chatWindow.scrollTop = chatWindow.scrollHeight;
   // Then upload the image to your backend as you do now
   const presignedUrl = await getPresignedUrl(clientHash, file.name);
+  const contentType = file.type || "image/jpeg"; // Fallback to a safe default
   const uploadResponse = await fetch(presignedUrl, {
     method: "PUT",
     headers: {
-      "Content-Type": file.type
+      "Content-Type": contentType
     },
     body: file
   });
@@ -416,7 +417,6 @@ async function handleUpload() {
     chatWindow.removeChild(imgDiv);
     return;
   }
-
   showUploadSuccessMessage();
   // Optionally revoke the object URL after upload to free memory
   URL.revokeObjectURL(img.src);
