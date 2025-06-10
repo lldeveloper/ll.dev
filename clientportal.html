@@ -421,7 +421,7 @@ async function handleUpload() {
       const innerBody = JSON.parse(userStatusData.body);
       if (innerBody.status) {
         sessionStorage.setItem('status', JSON.stringify(innerBody.status));
-        renderStatusDots(status);
+        alert(`Status: ${innerBody.status.join(', ')}`);
       }
     }
   } catch (err) {
