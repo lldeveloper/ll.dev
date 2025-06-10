@@ -420,12 +420,17 @@ async function handleUpload() {
     if (userStatusData && userStatusData.body) {
       const innerBody = JSON.parse(userStatusData.body);
       if (innerBody.status) {
-        // Save the status array as a string in sessionStorage
-        sessionStorage.setItem('status', JSON.stringify(innerBody.status));
-        alert(`Status: ${innerBody.status.join(', ')}`);
+        let statusArray = innerBody.status;
 
-        // Pass the *string* or the original array (converted to string) to renderStatusDots
-        renderStatusDots(innerBody.status.join(''));
+        // If last element is "0", change it to "1"
+        if (statusArray[statusArray.length - 1] === "0") {
+          statusArray[statusArray.length - 1] = "1";
+        }
+
+        sessionStorage.setItem('status', JSON.stringify(statusArray));
+        alert(`Status: ${statusArray.join(', ')}`);
+
+        renderStatusDots(statusArray.join(''));
       }
     }
   } catch (err) {
