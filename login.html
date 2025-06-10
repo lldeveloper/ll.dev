@@ -54,7 +54,6 @@ if (apiResponse.body) {
           sessionStorage.setItem('clientId', result.clientId);
           sessionStorage.setItem('status', result.status);
           sessionStorage.setItem('username', username);
-          alert(result.status)
           if (result.clientId === "admin") {
             window.location.href = "adminportal.html";
           } else {
