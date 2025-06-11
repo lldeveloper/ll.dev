@@ -431,7 +431,6 @@ async function handleUpload() {
           statusArray[statusArray.length - 1] = "1";
         }
         sessionStorage.setItem('status', JSON.stringify(statusArray));
-        alert(`Status: ${statusArray.join(', ')}`);
         renderStatusDots(statusArray.join(''));
       }
     }
